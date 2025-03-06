@@ -1,9 +1,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Huma - Coming Soon</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Apercu:ital,wght@0,700&display=swap'); /* Attempt to load Apercu Bold from Google Fonts (if available). If not, fall back to system fonts below. */
+    <title>Huma![HUMA1 best](https://github.com/user-attachments/assets/7da2932e-e2df-4572-86a9-7a19f195a7da)
+ - Coming Soon</title>
+    <style>       
 
         * {
             margin: 0;
