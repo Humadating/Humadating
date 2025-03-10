@@ -1,9 +1,10 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Humadating</title>
     <style>       
-
         * {
             margin: 0;
             padding: 0;
@@ -422,13 +423,9 @@
             <div class="notify-text">Get notified when we launch</div>
         </div>
         <div class="form-section">
-            <form id="notifyForm" class="form" action="https://formsubmit.co/el/covewu" method="POST">
+            <form id="notifyForm" class="form">
                 <input class="input" type="email" name="email" placeholder="Enter your email" required>
                 <textarea class="input" name="message" placeholder="Optional message"></textarea>
-                <input type="hidden" name="_next" value="https://yourwebsite.com/thanks.html">
-                <input type="hidden" name="_subject" value="Huma Launch Notification Signup">
-                <input type="hidden" name="_cc" value="humadating@gmail.com">
-                <input type="hidden" name="_template" value="table">
                 <button type="submit">Notify Me</button>
             </form>
             <div id="response"></div>
@@ -440,33 +437,33 @@
     </div>
 
     <script>
-        document.getElementById('notifyForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const form = this;
+        document.getElementById('notifyForm').addEventListener('submit', async (e) => {
+            e.preventDefault(); // Prevent default form submission
+
+            const form = e.target;
             const responseDiv = document.getElementById('response');
-            
             responseDiv.textContent = 'Submitting...';
-            
-            fetch(form.action, {
-                method: 'POST',
-                body: new FormData(form)
-            })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
+
+            const formData = new FormData(form);
+            const url = 'https://script.google.com/macros/s/AKfycbwYAFfslx4UZkI_U_vudkJ3W4hwtUpPFZD183ccAHAFWcGLZAj7zdDeMGiYgm3eCdvcQw/exec'; // Your Web App URL
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    responseDiv.textContent = 'Thank you! We\'ll notify you when Huma launches.';
+                    form.reset(); // Clear the form
                 } else {
-                    throw new Error('Form submission failed with status: ' + response.status);
+                    responseDiv.textContent = 'Something went wrong. Please try again.';
                 }
-            })
-            .then(data => {
-                responseDiv.textContent = 'Thank you! We\'ll notify you when Huma launches.';
-                form.reset();
-                console.log('Form submission successful:', data);
-            })
-            .catch(error => {
+            } catch (error) {
                 responseDiv.textContent = 'Something went wrong. Please try again.';
                 console.error('Form submission error:', error);
-            });
+            }
         });
     </script>
 </body>
