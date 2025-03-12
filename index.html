@@ -672,7 +672,7 @@
             }
         });
 
-        // Chatbot Functionality with DeepSeek
+        // Chatbot Functionality with Backend
         let chatHistory = [
             { 
                 role: 'system', 
@@ -703,39 +703,27 @@
             const message = chatbotInput.value.trim();
             if (!message) return;
 
-            // Display user message
             appendMessage(message, 'user');
             chatbotInput.value = '';
 
-            // Add user message to chat history
             chatHistory.push({ role: 'user', content: message });
 
             try {
-                const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+                const response = await fetch('http://localhost:3000/api/chat', { // Local backend URL
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer sk-f3ed117b50c74b8ead86e2a8e18473b2' // DeepSeek API key
-                    },
-                    body: JSON.stringify({
-                        model: 'deepseek-chat', // Adjust model name based on DeepSeek's documentation
-                        messages: chatHistory,
-                        max_tokens: 150, // Limit response length for concise answers
-                        temperature: 0.7 // Balanced creativity for engaging responses
-                    })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
                 });
 
-                if (!response.ok) {
-                    throw new Error('DeepSeek API request failed: ' + response.statusText);
-                }
-
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
                 const data = await response.json();
-                const aiResponse = data.choices[0].message.content;
-                appendMessage(aiResponse, 'ai');
-                chatHistory.push({ role: 'assistant', content: aiResponse });
+                if (data.success) {
+                    appendMessage(data.response, 'ai');
+                    chatHistory.push({ role: 'assistant', content: data.response });
+                } else throw new Error(data.error || 'Unknown error');
             } catch (error) {
-                appendMessage('Sorry, I couldn’t process that. Please try again!', 'ai');
-                console.error('Chatbot error:', error);
+                console.error('API Error:', error.message);
+                appendMessage(`Sorry, I couldn’t process that. Please try again! (Error: ${error.message})`, 'ai');
             }
         }
 
