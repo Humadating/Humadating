@@ -714,7 +714,7 @@
             chatHistory.push({ role: 'user', content: message });
 
             try {
-                const response = await fetch('http://localhost:3000/api/chat', { // Local backend URL
+                const response = await fetch('https://huma-backend.onrender.com/api/chat', { // Updated to Render backend URL
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message })
