@@ -1,25 +1,257 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Huma AI Chat</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 50px;
-    }
-    h1 {
-      color: #333;
-    }
-    p {
-      color: #666;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Huma AI Chat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            width: 100%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: #f9f9f9; /* Light gray background for a clean look */
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        h1 {
+            color: #333;
+            font-family: 'Apercu', Arial Black, Helvetica Neue, sans-serif;
+            font-weight: 700;
+            font-size: 36px;
+            margin-bottom: 5px;
+            letter-spacing: -3px;
+        }
+
+        .header b {
+            font-size: 18px;
+            color: #333;
+        }
+
+        .content {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #999;
+            font-size: 14px;
+        }
+
+        /* Chatbot Styles */
+        .chatbot-container {
+            width: 100%;
+            max-width: 500px;
+            z-index: 1000;
+        }
+
+        .chatbot-window {
+            width: 100%;
+            height: 500px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            display: flex; /* Always visible */
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chatbot-header {
+            background: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chatbot-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .chatbot-body {
+            flex-grow: 1;
+            padding: 10px;
+            overflow-y: auto;
+            background: #f9f9f9;
+        }
+
+        .chatbot-message {
+            margin-bottom: 10px;
+            border-radius: 10px;
+            word-wrap: break-word;
+            display: inline-block;
+            max-width: 80%;
+            width: fit-content;
+        }
+
+        .chatbot-message.user {
+            background: #007bff;
+            color: white;
+            margin-right: auto;
+            margin-left: 10px;
+            text-align: left;
+            padding: 6px 10px;
+        }
+
+        .chatbot-message.ai {
+            background: #e9ecef;
+            color: #333;
+            margin-left: auto;
+            margin-right: 10px;
+            padding: 6px 10px;
+        }
+
+        .chatbot-prompts {
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .chatbot-prompt {
+            background: #e9ecef;
+            color: #333;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .chatbot-prompt:hover {
+            background: #d1d4d7;
+        }
+
+        .chatbot-footer {
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            background: #fff;
+        }
+
+        .chatbot-input {
+            flex-grow: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+            margin-right: 10px;
+        }
+
+        .chatbot-send {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .chatbot-send:hover {
+            background: #0056b3;
+        }
+    </style>
 </head>
 <body>
-  <h1>Welcome to Huma AI Chat</h1>
-  <p>This is the chat page for Huma Dating. More features coming soon!</p>
-</body>
-</html>
+    <div class="header">
+        <h1>Huma AI Chat</h1>
+        <b>Chat with Huma AI</b>
+    </div>
+
+    <div class="content">
+        <div class="chatbot-container">
+            <div class="chatbot-window" id="chatbotWindow">
+                <div class="chatbot-header">
+                    <span>Huma AI</span>
+                    <button class="chatbot-close" onclick="window.location.href='/'">×</button>
+                </div>
+                <div class="chatbot-body" id="chatbotBody">
+                    <div class="chatbot-message ai">Hi, I'm Huma AI! How can I help you today?</div>
+                </div>
+                <div class="chatbot-prompts" id="chatbotPrompts">
+                    <div class="chatbot-prompt" onclick="sendPrompt('Can I follow Huma Dating on social media?')">Can I follow Huma Dating on social media?</div>
+                    <div class="chatbot-prompt" onclick="sendPrompt('When will Huma Dating launch?')">When will Huma Dating launch?</div>
+                </div>
+                <div class="chatbot-footer">
+                    <input type="text" class="chatbot-input" id="chatbotInput" placeholder="Type your message..." onkeypress="if(event.key === 'Enter') sendMessage()">
+                    <button class="chatbot-send" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        © 2025 Huma. All rights reserved.
+    </div>
+
+    <script>
+        // Chatbot Functionality with Backend
+        let chatHistory = [
+            { 
+                role: 'system', 
+                content: 'You are Huma AI, a chatbot for Huma Dating, a platform focused on meaningful human connections. Huma Dating is a dating service launching soon, aimed at fostering authentic relationships through shared values and interests. Users can sign up to be notified when the platform launches, follow Huma Dating on Instagram (@humadating), and expect a user-friendly app experience. The platform emphasizes privacy, safety, and genuine interactions, avoiding superficial swiping. Answer questions about Huma Dating, its features, and its mission. If a user asks something unrelated, politely redirect them to Huma Dating topics. Be friendly, engaging, and concise. Do not share or store any personal user information beyond this conversation.'
+            }
+        ];
+
+        function appendMessage(message, sender) {
+            const chatbotBody = document.getElementById('chatbotBody');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chatbot-message ${sender}`;
+            messageDiv.textContent = message;
+            chatbotBody.appendChild(messageDiv);
+            chatbotBody.scrollTop = chatbotBody.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const chatbotInput = document.getElementById('chatbotInput');
+            const message = chatbotInput.value.trim();
+            if (!message) return;
+
+            appendMessage(message, 'user');
+            chatbotInput.value = '';
+
+            chatHistory.push({ role: 'user', content: message });
+
+            try {
+                const response = await fetch('https://huma-backend.onrender.com/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                const data = await response.json();
+                if (data.success) {
+                    appendMessage(data.response, 'ai');
+                    chatHistory.push({ role: 'assistant', content: data.response });
+                } else throw new Error(data.error ||
